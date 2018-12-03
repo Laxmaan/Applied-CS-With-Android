@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Scarne\'s Dice</string>
+    <string name="image_cont_desc">Die Face</string>
+    <string name="action_button_1">ROLL</string>
+    <string name="action_button_2">HOLD</string>
+    <string name="action_button_3">RESET</string>
+    <string name="user_score_initial">Your Score :0</string>
+    <string name="comp_score_initial">Computer Score :0</string>
 </resources>
