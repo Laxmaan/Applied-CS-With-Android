@@ -18,7 +18,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnScoreChangeListener {
     Scores scores = new Scores(this);
-    int turn_score=0,roll;
+    int turn_score=0,roll,no_rolls=0;
     boolean gameOver=false;
     Random random = new Random();
     ImageView diceView;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnScoreChangeList
         roll=rollDie();
         if(roll==1) {
             turn_score=0;
-                       //TURN OVER
+            //TURN OVER
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -90,60 +90,84 @@ public class MainActivity extends AppCompatActivity implements OnScoreChangeList
         roll_button.setEnabled(false);
         hold_button.setEnabled(false);
         reset_button.setEnabled(false);
-
-        Handler handler = new Handler();
-
+        no_rolls=0;
 
 
         int times_to_roll = new Random().nextInt(7)+1;      // It rolls randomly between 1-7 turns and then holds.
         Log.d("COMPROLL","rolling for turns: "+times_to_roll);  //UNCOMMENT to see how many times it rolls
+        final Handler handler = new Handler();
+        final int finalTimes_to_roll = times_to_roll;
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                roll=rollDie();
+                Log.d("COMPROLL","rolled a "+roll);
+                turn_score+=roll!=1?roll:0;
+                no_rolls++;
+                if(roll!=1&&no_rolls< finalTimes_to_roll)
+                    handler.postDelayed(this,500);
+                else {
+                    handler.removeCallbacks(this);
+                    turn_score=(roll==1)?0:turn_score;
+                    scores.incrementCompScore(turn_score);
+                    compScore.setText("Computer Score : "+scores.getComp_score());
+                    String msg = (roll==1)?"Computer rolled a 1":"Computer decided to hold. Turn score: "
+                            +turn_score;
 
-        do{
-
-                    roll=rollDie();
-
-
-            Log.d("COMPROLL","rolled a "+roll);
-            turn_score+=roll!=1?roll:0;
-        }while(roll!=1 && --times_to_roll>0);
-
-        turn_score=(roll==1)?0:turn_score;
-        scores.incrementCompScore(turn_score);
-        compScore.setText("Computer Score : "+scores.getComp_score());
-        String msg = (roll==1)?"Computer rolled a 1":"Computer decided to hold. Turn score: "
-                +turn_score;
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
-        if(!gameOver) {
-            roll_button.setEnabled(true);
-            hold_button.setEnabled(true);
-            reset_button.setEnabled(true);
-            turn_score = 0;
+                    if(!gameOver) {
+                        Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                        roll_button.setEnabled(true);
+                        hold_button.setEnabled(true);
+                        reset_button.setEnabled(true);
+                        turn_score = 0;
 
 
-        }
+                    }
+                    else
+                        reset_button.setEnabled(true);
+                }
+
+
+            }
+        };
+
+
+
+
+
+        handler.postDelayed(runnable,0);
+
+
+
+        Log.d("COMPROLL", String.valueOf(turn_score));
+
+
+
+
+
     }
     public int rollDie(){
         int roll=random.nextInt(6)+1;
 
-            int id;
-            switch (roll){
-                case 1: id=R.drawable.dice1;
-                    break;
-                case 2: id=R.drawable.dice2;
-                    break;
-                case 3: id=R.drawable.dice3;
-                    break;
-                case 4: id=R.drawable.dice4;
-                    break;
-                case 5: id=R.drawable.dice5;
-                    break;
-                default:
-                    id=R.drawable.dice6;
-            }
+        int id;
+        switch (roll){
+            case 1: id=R.drawable.dice1;
+                break;
+            case 2: id=R.drawable.dice2;
+                break;
+            case 3: id=R.drawable.dice3;
+                break;
+            case 4: id=R.drawable.dice4;
+                break;
+            case 5: id=R.drawable.dice5;
+                break;
+            default:
+                id=R.drawable.dice6;
+        }
         Animation animation = new TranslateAnimation(0f,20f,0f,0.4f);
-            animation.setInterpolator(new LinearInterpolator());
-            diceView.startAnimation(animation);
-            diceView.setImageDrawable(getResources().getDrawable(id,null));
+        animation.setInterpolator(new LinearInterpolator());
+        diceView.startAnimation(animation);
+        diceView.setImageDrawable(getResources().getDrawable(id,null));
 
         return roll;
     }
