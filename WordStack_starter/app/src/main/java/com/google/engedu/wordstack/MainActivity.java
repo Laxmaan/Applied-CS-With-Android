@@ -19,6 +19,7 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,11 +57,8 @@ public class MainActivity extends AppCompatActivity {
             String line = null;
             while((line = in.readLine()) != null) {
                 String word = line.trim();
-                /**
-                 **
-                 **  YOUR CODE GOES HERE
-                 **
-                 **/
+                if(word.length()==WORD_LENGTH)
+                    words.add(word);
             }
         } catch (IOException e) {
             Toast toast = Toast.makeText(this, "Could not load dictionary", Toast.LENGTH_LONG);
@@ -143,11 +141,25 @@ public class MainActivity extends AppCompatActivity {
     public boolean onStartGame(View view) {
         TextView messageBox = (TextView) findViewById(R.id.message_box);
         messageBox.setText("Game started");
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        word1=words.get(random.nextInt(words.size()));
+        word2=words.get(random.nextInt(words.size()));
+        int i=0,j=0;
+        StringBuffer buffer = new StringBuffer();
+        while(buffer.length()<word1.length()+word2.length()){
+            if(random.nextInt(2)==0&&i<word1.length())
+                buffer.append(word1.charAt(i++));
+            else if(random.nextInt(2)==1&&j<word2.length())
+                buffer.append(word2.charAt(j++));
+        }
+        String op = buffer.toString();
+        Log.d("CHK",op);
+        i=op.length()-1;
+        while(i>=0){
+            stackedLayout.push(new LetterTile(this,op.charAt(i)));
+            i--;
+        }
+
+
         return true;
     }
 
