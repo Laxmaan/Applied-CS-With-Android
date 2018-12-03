@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private Random random = new Random();
     private StackedLayout stackedLayout;
     private String word1, word2;
+    private Stack<LetterTile> placedTiles = new Stack<>();
+    private LinearLayout word1LinearLayout,word2LinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
         stackedLayout = new StackedLayout(this);
         verticalLayout.addView(stackedLayout, 3);
 
-        View word1LinearLayout = findViewById(R.id.word1);
+         word1LinearLayout = findViewById(R.id.word1);
         word1LinearLayout.setOnTouchListener(new TouchListener());
-        //word1LinearLayout.setOnDragListener(new DragListener());
-        View word2LinearLayout = findViewById(R.id.word2);
+        word1LinearLayout.setOnDragListener(new DragListener());
+         word2LinearLayout = findViewById(R.id.word2);
         word2LinearLayout.setOnTouchListener(new TouchListener());
-        //word2LinearLayout.setOnDragListener(new DragListener());
+        word2LinearLayout.setOnDragListener(new DragListener());
     }
 
     private class TouchListener implements View.OnTouchListener {
@@ -87,11 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView messageBox = (TextView) findViewById(R.id.message_box);
                     messageBox.setText(word1 + " " + word2);
                 }
-                /**
-                 **
-                 **  YOUR CODE GOES HERE
-                 **
-                 **/
+                placedTiles.push(tile);
                 return true;
             }
             return false;
@@ -127,11 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView messageBox = (TextView) findViewById(R.id.message_box);
                         messageBox.setText(word1 + " " + word2);
                     }
-                    /**
-                     **
-                     **  YOUR CODE GOES HERE
-                     **
-                     **/
+                    placedTiles.push(tile);
                     return true;
             }
             return false;
@@ -140,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onStartGame(View view) {
         TextView messageBox = (TextView) findViewById(R.id.message_box);
+
+        word1LinearLayout.removeAllViews();
+        word2LinearLayout.removeAllViews();
+        stackedLayout.clear();
         messageBox.setText("Game started");
         word1=words.get(random.nextInt(words.size()));
         word2=words.get(random.nextInt(words.size()));
@@ -164,11 +162,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onUndo(View view) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        LetterTile tile = null;
+        if(!placedTiles.isEmpty()) {
+            tile = placedTiles.pop();
+            tile.moveToViewGroup(stackedLayout);
+        }
+
         return true;
     }
 }

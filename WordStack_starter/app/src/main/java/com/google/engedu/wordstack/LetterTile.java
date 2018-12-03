@@ -25,7 +25,7 @@ import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class LetterTile extends TextView {
+public class LetterTile extends android.support.v7.widget.AppCompatTextView {
 
     public static final int TILE_SIZE = 150;
     private Character letter;
@@ -68,11 +68,11 @@ public class LetterTile extends TextView {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        if(!frozen&&motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+            startDragAndDrop(ClipData.newPlainText("","")
+                    ,new View.DragShadowBuilder(this),this,0);
+            return true;
+        }
         return super.onTouchEvent(motionEvent);
     }
 }
