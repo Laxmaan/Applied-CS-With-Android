@@ -34,17 +34,23 @@ public class CircularLinkedList implements Iterable<Point> {
     Node head;
 
     public void insertBeginning(Point p) {
-        Node newNode = new Node(p);
-        if(head.next==null){
-            //list empty
-            newNode.next=newNode.prev=newNode;
-            head.next=newNode;
-            head.prev=null;
+
+        if(head==null){  //list empty
+            head = new Node(p);
+            head.next=head.prev=head;
+
         }
-        else{ Node firstNode = head.next, lastNode=firstNode.prev;
+        else{
+            Node newNode = new Node(p), lastNode=head.prev;  // keep track of last node, new node and first node (head)
+            // set up new node connections;
             newNode.prev=lastNode;
-            newNode.next=firstNode;
-            head.next=firstNode.prev=lastNode.next=newNode;
+            newNode.next=head;
+
+            //overwrite other node connections
+            head.prev=lastNode.next=newNode;
+
+            //make head point to new node
+            head = newNode;
 
         }
 
@@ -56,32 +62,64 @@ public class CircularLinkedList implements Iterable<Point> {
 
     public float totalDistance() {
         float total = 0;
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        Iterator<Point> i = iterator();
+        Point p1=i.next(),p2;
+        while(i.hasNext()){
+            p2=i.next();
+            total+=distanceBetween(p1,p2);
+            p1=p2;
+        }
         return total;
     }
 
     public void insertNearest(Point p) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+            //list empty
+        if(head==null)
+            insertBeginning(p);
+        else{
+            Node newNode = new Node(p),closest=findNearest(p);
+            insertAfter(closest,newNode);
+        }
     }
 
     public void insertSmallest(Point p) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        if(head==null)
+            insertBeginning(p);
+        else {
+            Node closest = findNearest(p);
+            Node prevNode = closest.prev, nextNode = closest.next;
+            if (distanceBetween(prevNode.point, p) < distanceBetween(p, nextNode.point)) {
+                insertAfter(prevNode, new Node(p));
+            } else insertAfter(closest, new Node(p));
+        }
     }
 
     public void reset() {
         head = null;
+    }
+
+    // HELPER METHODS
+
+    void insertAfter(Node first, Node newNode){
+        newNode.next = first.next;
+        newNode.prev = first;
+        first.next.prev=newNode;
+        first.next=newNode;
+
+    }
+
+    Node findNearest(Point p){
+        float min_dist=Float.MAX_VALUE,dist;
+        Node i = head.next, closest = head;
+        while(i!=head){
+            dist = distanceBetween(p,i.point);
+            if(dist<min_dist){
+                min_dist=dist;
+                closest=i;
+            }
+            i=i.next;
+        }
+        return closest;
     }
 
     private class CircularLinkedListIterator implements Iterator<Point> {

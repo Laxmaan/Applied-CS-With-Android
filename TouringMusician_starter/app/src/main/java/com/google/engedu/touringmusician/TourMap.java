@@ -46,24 +46,20 @@ public class TourMap extends View {
         canvas.drawBitmap(mapImage, 0, 0, null);
         Paint pointPaint = new Paint();
         pointPaint.setColor(Color.RED);
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+
+        Point previous = null,first=null;
         for (Point p : list) {
-            /**
-             **
-             **  YOUR CODE GOES HERE
-             **
-             **/
+            if(first==null)
+                first=p;
             canvas.drawCircle(p.x, p.y, 20, pointPaint);
+
+            if(previous!=null)
+                canvas.drawLine(previous.x,previous.y,p.x,p.y,pointPaint);
+            previous=p;
         }
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        if(previous!=null && first!=null)
+            canvas.drawLine(previous.x,previous.y,first.x,first.y,pointPaint);
+
     }
 
     @Override
