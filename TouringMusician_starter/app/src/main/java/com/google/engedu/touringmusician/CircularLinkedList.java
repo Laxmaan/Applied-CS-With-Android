@@ -25,21 +25,29 @@ public class CircularLinkedList implements Iterable<Point> {
     private class Node {
         Point point;
         Node prev, next;
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+
+        Node(Point p){
+            this.point=p;
+        }
     }
 
     Node head;
 
     public void insertBeginning(Point p) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        Node newNode = new Node(p);
+        if(head.next==null){
+            //list empty
+            newNode.next=newNode.prev=newNode;
+            head.next=newNode;
+            head.prev=null;
+        }
+        else{ Node firstNode = head.next, lastNode=firstNode.prev;
+            newNode.prev=lastNode;
+            newNode.next=firstNode;
+            head.next=firstNode.prev=lastNode.next=newNode;
+
+        }
+
     }
 
     private float distanceBetween(Point from, Point to) {
