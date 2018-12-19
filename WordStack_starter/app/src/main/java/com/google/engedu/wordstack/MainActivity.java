@@ -38,7 +38,8 @@ import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int WORD_LENGTH = 5;
+    private static final int MAX_WORD_LENGTH = 5;
+    private int WORD_LENGTH=3;
     public static final int LIGHT_BLUE = Color.rgb(176, 200, 255);
     public static final int LIGHT_GREEN = Color.rgb(200, 255, 200);
     private ArrayList<String> words = new ArrayList<>();
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             String line = null;
             while((line = in.readLine()) != null) {
                 String word = line.trim();
-                if(word.length()==WORD_LENGTH)
+                if(word.length()<= MAX_WORD_LENGTH)
                     words.add(word);
             }
         } catch (IOException e) {
@@ -139,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
         word2LinearLayout.removeAllViews();
         stackedLayout.clear();
         messageBox.setText("Game started");
-        word1=words.get(random.nextInt(words.size()));
-        word2=words.get(random.nextInt(words.size()));
+        do {
+            word1 = words.get(random.nextInt(words.size()));
+            word2 = words.get(random.nextInt(words.size()));
+        }while(word1.length()!=WORD_LENGTH||word2.length()!=WORD_LENGTH);
         int i=0,j=0;
         StringBuffer buffer = new StringBuffer();
         while(buffer.length()<word1.length()+word2.length()){
@@ -156,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             stackedLayout.push(new LetterTile(this,op.charAt(i)));
             i--;
         }
-
+        WORD_LENGTH=Math.min(WORD_LENGTH+1,MAX_WORD_LENGTH);
 
         return true;
     }
