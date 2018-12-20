@@ -62,13 +62,13 @@ public class CircularLinkedList implements Iterable<Point> {
 
     public float totalDistance() {
         float total = 0;
-        Iterator<Point> i = iterator();
-        Point p1=i.next(),p2;
-        while(i.hasNext()){
-            p2=i.next();
-            total+=distanceBetween(p1,p2);
-            p1=p2;
+        boolean traversed = false;
+        for(Node i=head;i!=null&&!traversed;i=i.next){
+            if(i==head.prev)
+                traversed=true;
+            total+=distanceBetween(i.point,i.next.point);
         }
+
         return total;
     }
 
@@ -86,11 +86,20 @@ public class CircularLinkedList implements Iterable<Point> {
         if(head==null)
             insertBeginning(p);
         else {
-            Node closest = findNearest(p);
-            Node prevNode = closest.prev, nextNode = closest.next;
-            if (distanceBetween(prevNode.point, p) < distanceBetween(p, nextNode.point)) {
-                insertAfter(prevNode, new Node(p));
-            } else insertAfter(closest, new Node(p));
+            Node A=head,B=head.next,insert_after=null;
+            float min_gain=Float.MAX_VALUE;
+            do{
+                float gain = distanceBetween(A.point,p)+distanceBetween(B.point,p)
+                                - distanceBetween(A.point,B.point);
+                if(gain<min_gain){
+                    min_gain=gain;
+                    insert_after=A;
+                }
+                A=B;
+                B=B.next;
+            }while(A!=head);
+
+            insertAfter(insert_after,new Node(p));
         }
     }
 
@@ -109,7 +118,7 @@ public class CircularLinkedList implements Iterable<Point> {
     }
 
     Node findNearest(Point p){
-        float min_dist=Float.MAX_VALUE,dist;
+        float min_dist=distanceBetween(p,head.point),dist;
         Node i = head.next, closest = head;
         while(i!=head){
             dist = distanceBetween(p,i.point);

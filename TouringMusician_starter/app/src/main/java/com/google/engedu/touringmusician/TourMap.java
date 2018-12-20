@@ -46,7 +46,7 @@ public class TourMap extends View {
         canvas.drawBitmap(mapImage, 0, 0, null);
         Paint pointPaint = new Paint();
         pointPaint.setColor(Color.RED);
-
+        pointPaint.setStrokeWidth(16);
         Point previous = null,first=null;
         for (Point p : list) {
             if(first==null)
