@@ -34,11 +34,34 @@
         android:id="@+id/top_layout">
 
         <TextView
+            android:id="@+id/game_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap on map to set concert sites."
             android:layout_weight="1"
-            android:id="@+id/game_status" />
+            android:textColor="#FF0000"
+            android:text="Tap on map to set concert sites."
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/game_status2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#00FF00"
+            android:text="Tap on map to set concert sites."
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/game_status3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#0000FF"
+            android:text="Tap on map to set concert sites."
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="horizontal"

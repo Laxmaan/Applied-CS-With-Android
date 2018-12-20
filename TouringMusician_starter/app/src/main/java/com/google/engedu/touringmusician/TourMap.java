@@ -27,10 +27,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class TourMap extends View {
 
     private Bitmap mapImage;
-    private CircularLinkedList list = new CircularLinkedList();
+    private CircularLinkedList list = new CircularLinkedList(),
+            list1 = new CircularLinkedList(),list2 = new CircularLinkedList(); //added
     private String insertMode = "Add";
 
     public TourMap(Context context) {
@@ -45,20 +48,31 @@ public class TourMap extends View {
         super.onDraw(canvas);
         canvas.drawBitmap(mapImage, 0, 0, null);
         Paint pointPaint = new Paint();
-        pointPaint.setColor(Color.RED);
-        pointPaint.setStrokeWidth(16);
-        Point previous = null,first=null;
-        for (Point p : list) {
-            if(first==null)
-                first=p;
-            canvas.drawCircle(p.x, p.y, 20, pointPaint);
 
-            if(previous!=null)
-                canvas.drawLine(previous.x,previous.y,p.x,p.y,pointPaint);
-            previous=p;
-        }
-        if(previous!=null && first!=null)
-            canvas.drawLine(previous.x,previous.y,first.x,first.y,pointPaint);
+        pointPaint.setStrokeWidth(16);
+
+        int[] colors={Color.RED,Color.GREEN,Color.BLUE};
+        CircularLinkedList[] lists = {list,list1,list2};
+        int mode=-1;
+        if(insertMode.equals("Closest"))
+            mode=1;
+        else if(insertMode.equals("Smallest"))
+            mode=2;
+        else mode =0;
+
+            Point previous = null,first=null;
+            pointPaint.setColor(colors[mode]);
+            for (Point p : lists[mode]) {
+                if (first == null)
+                    first = p;
+                canvas.drawCircle(p.x, p.y, 20, pointPaint);
+
+                if (previous != null)
+                    canvas.drawLine(previous.x, previous.y, p.x, p.y, pointPaint);
+                previous = p;
+            }
+            if (previous != null && first != null)
+                canvas.drawLine(previous.x, previous.y, first.x, first.y, pointPaint);
 
     }
 
@@ -67,16 +81,30 @@ public class TourMap extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Point p = new Point((int) event.getX(), (int)event.getY());
-                if (insertMode.equals("Closest")) {
+                /*if (insertMode.equals("Closest")) {
                     list.insertNearest(p);
                 } else if (insertMode.equals("Smallest")) {
                     list.insertSmallest(p);
                 } else {
                     list.insertBeginning(p);
-                }
-                TextView message = (TextView) ((Activity) getContext()).findViewById(R.id.game_status);
+                }*/
+                list.insertBeginning(p);
+                list1.insertNearest(p);
+                list2.insertSmallest(p);
+                TextView message = (TextView) ((Activity) getContext()).findViewById(R.id.game_status),
+                        message1 = ((Activity) getContext()).findViewById(R.id.game_status2),// added
+                        message2 = ((Activity) getContext()).findViewById(R.id.game_status3); //added
                 if (message != null) {
-                    message.setText(String.format("Tour length is now %.2f", list.totalDistance()));
+                    message.setText(String.format(Locale.getDefault(),
+                            "Tour length for [Beginning] is %.2f",
+                            list.totalDistance()));
+                    message1.setText(String.format(Locale.getDefault(),
+                            "Tour length for [Nearest] is %.2f",
+                            list1.totalDistance()));
+                    message2.setText(String.format(Locale.getDefault(),
+                            "Tour length for [Shortest] is %.2f",
+                            list2.totalDistance()));
+
                 }
                 invalidate();
                 return true;
@@ -86,10 +114,13 @@ public class TourMap extends View {
 
     public void reset() {
         list.reset();
+        list1.reset();  //added
+        list2.reset();  //added
         invalidate();
     }
 
     public void setInsertMode(String mode) {
         insertMode = mode;
+        invalidate();
     }
 }

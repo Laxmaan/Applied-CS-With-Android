@@ -15,6 +15,7 @@
 
 package com.google.engedu.touringmusician;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
@@ -61,9 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onReset(View v) {
         map.reset();
-        TextView message = (TextView) findViewById(R.id.game_status);
+        TextView message = (TextView) findViewById(R.id.game_status),
+                message1 = findViewById(R.id.game_status2),// added
+                message2 = findViewById(R.id.game_status3); //added
         if (message != null) {
             message.setText("Tap map to add new tour stops.");
+            message1.setText("Tap map to add new tour stops.");     //added
+            message2.setText("Tap map to add new tour stops.");     //added
         }
     }
 }
